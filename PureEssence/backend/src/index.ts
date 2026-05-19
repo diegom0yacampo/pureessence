@@ -23,6 +23,7 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const allowedOrigins = [
   "http://localhost:5173",
   "https://friendly-lebkuchen-e9d64d.netlify.app",
+  "https://diegom0yacampo.github.io",
   process.env.FRONTEND_URL,
 ].filter(Boolean) as string[];
 
