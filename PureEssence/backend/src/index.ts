@@ -1028,12 +1028,28 @@ app.post("/api/generate-image", async (req: Request, res: Response) => {
 });
 
 // Servir frontend estático (producción)
+import { existsSync, readdirSync } from "fs";
 const publicPath = path.join(__dirname, "..", "public");
+
+// Debug: mostrar estado del directorio public al arrancar
+const indexHtmlPath = path.join(publicPath, "index.html");
+console.log(`[STATIC] publicPath: ${publicPath}`);
+console.log(`[STATIC] index.html exists: ${existsSync(indexHtmlPath)}`);
+if (existsSync(publicPath)) {
+  console.log(`[STATIC] public/ contents: ${readdirSync(publicPath).join(", ")}`);
+} else {
+  console.log(`[STATIC] public/ directory does NOT exist!`);
+}
+
 app.use(express.static(publicPath));
 
 // SPA catch-all: cualquier ruta no-API devuelve el index.html
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.join(publicPath, "index.html"));
+  if (!existsSync(indexHtmlPath)) {
+    res.status(200).send(`<h1>App building...</h1><p>publicPath: ${publicPath}</p>`);
+    return;
+  }
+  res.sendFile(indexHtmlPath);
 });
 
 app.listen(PORT, () => {
