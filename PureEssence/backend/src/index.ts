@@ -5,6 +5,11 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { pool } from "./db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -1028,6 +1033,15 @@ app.post("/api/generate-image", async (req: Request, res: Response) => {
     console.error("Error generando imagen:", err);
     res.status(500).json({ error: err?.message ?? "Error interno." });
   }
+});
+
+// Servir frontend estático (producción)
+const publicPath = path.join(__dirname, "..", "public");
+app.use(express.static(publicPath));
+
+// SPA catch-all: cualquier ruta no-API devuelve el index.html
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
 app.listen(PORT, () => {

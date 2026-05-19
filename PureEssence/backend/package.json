@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "node build.mjs",
     "start": "node dist/index.js",
     "test-conn": "node test-conn.mjs",
     "setup-db": "node setup-db.mjs"
