@@ -4,14 +4,11 @@
 .env.production
 
 # Dependencies
-node_modules/
+**/node_modules/
 
 # Build output
-dist/
-build/
-
-# TypeScript compiled output
-PureEssence/backend/dist/
+**/dist/
+**/build/
 
 # Logs
 *.log
