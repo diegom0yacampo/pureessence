@@ -1,0 +1,230 @@
+/* ── IntranetFichajes ────────────────────────────── */
+.wrap { display: flex; flex-direction: column; gap: 2rem; }
+
+.title {
+  font-size: 2.5rem;
+  font-family: var(--font-heading);
+  color: var(--color-gold);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #4b5563;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Clock-in status card */
+.statusCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+.statusCardActive { background-color: #f0fdf4; border-color: #bbf7d0; }
+
+@media (min-width: 640px) {
+  .statusCard { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+.statusLeft { display: flex; align-items: center; gap: 1rem; }
+
+.statusIcon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+.statusIconActive { background-color: #dcfce7; color: #16a34a; }
+
+.statusDot { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #f87171;
+  animation: pulse 2s infinite;
+}
+.dotActive { background-color: #22c55e; }
+
+.dotLabel {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #4b5563;
+}
+
+.statusDesc { font-size: 0.875rem; color: #6b7280; }
+
+/* Clock button */
+.clockBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: var(--color-gold);
+  color: #000;
+  white-space: nowrap;
+}
+.clockBtn:hover { background-color: rgba(197,160,89,0.9); }
+.clockBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.clockBtnOut {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.clockBtnOut:hover { background-color: #fecaca; }
+
+/* Stats grid */
+.statsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+@media (min-width: 640px) { .statsGrid { grid-template-columns: repeat(3, 1fr); } }
+
+.statCard {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.statCard:last-child {
+  grid-column: span 2;
+}
+@media (min-width: 640px) { .statCard:last-child { grid-column: span 1; } }
+
+.statValue { font-size: 1.5rem; font-weight: 700; color: #1e3a5f; margin: 0.5rem 0 0.25rem; }
+
+.statLabel {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  font-family: var(--font-mono);
+}
+
+/* History table */
+.historyWrap {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.historyHead {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  background-color: #f9fafb;
+}
+
+.historyLabel {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  font-family: var(--font-mono);
+}
+
+.historyTable { width: 100%; text-align: left; }
+
+.historyThead { border-bottom: 1px solid #f3f4f6; }
+
+.th {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  font-family: var(--font-mono);
+}
+.thRight { text-align: right; }
+
+.tr { transition: background-color 0.2s; }
+.tr:hover { background-color: #f9fafb; }
+.trActive { background-color: #f0fdf4; }
+
+.td { padding: 1rem 1.5rem; }
+
+.dateLabel {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #374151;
+  text-transform: capitalize;
+}
+
+.timeEntry { display: flex; align-items: center; gap: 0.5rem; }
+
+.dotGreen { width: 0.375rem; height: 0.375rem; border-radius: 9999px; background-color: #4ade80; }
+.dotRed   { width: 0.375rem; height: 0.375rem; border-radius: 9999px; background-color: #f87171; }
+
+.timeLabel { font-family: var(--font-mono); font-size: 0.875rem; font-weight: 700; color: #1f2937; }
+
+.badgeActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #16a34a;
+  background-color: #dcfce7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.dotActivePulse {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: #22c55e;
+  animation: pulse 2s infinite;
+}
+
+.duration { font-family: var(--font-mono); font-size: 0.875rem; font-weight: 700; color: var(--color-gold); }
+.durationEmpty { color: #d1d5db; font-family: var(--font-mono); font-size: 0.875rem; }
+
+.tdRight { text-align: right; }
+
+/* Empty / loading */
+.centerMsg {
+  padding: 3rem;
+  text-align: center;
+  color: #9ca3af;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.loading {
+  padding: 3rem;
+  text-align: center;
+  color: var(--color-gold-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }

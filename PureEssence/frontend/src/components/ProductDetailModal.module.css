@@ -1,0 +1,213 @@
+/* ── ProductDetailModal ───────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.7);
+  backdrop-filter: blur(12px);
+}
+
+.modal {
+  position: relative;
+  background-color: #0d0d0d;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1.75rem;
+  width: 100%;
+  max-width: 42rem;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) { .layout { flex-direction: row; } }
+
+/* Image */
+.imageWrap {
+  flex-shrink: 0;
+  background-color: #18181b;
+  aspect-ratio: 1;
+}
+@media (min-width: 768px) {
+  .imageWrap {
+    width: 45%;
+    aspect-ratio: unset;
+    min-height: 440px;
+  }
+}
+
+.image { width: 100%; height: 100%; object-fit: cover; }
+
+/* Info */
+.info {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.body { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-gold);
+}
+
+.notesEyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: rgba(197,160,89,0.7);
+}
+
+.titleWrap { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.rule {
+  width: 2.5rem;
+  height: 1px;
+  background-color: rgba(197,160,89,0.4);
+  border: none;
+}
+
+.description {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  background: none;
+}
+
+.chipGold {
+  border-color: rgba(197,160,89,0.2);
+  color: rgba(197,160,89,0.7);
+}
+
+.customDetail {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 300;
+}
+
+.customLabel {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin-right: 0.5rem;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.priceBlock {}
+
+.unit {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 0.25rem;
+}
+
+.price {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.outOfStock {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(248,113,113,0.7);
+  margin-top: 0.25rem;
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #fff;
+  color: #000;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.addBtn:hover { background-color: rgba(255,255,255,0.9); }
+.addBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+.addBtn:disabled:hover { background-color: #fff; }
+
+/* Close button */
+.closeBtn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 10;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: rgba(255,255,255,0.07);
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  transition: background-color 0.3s;
+}
+.closeBtn:hover { background-color: rgba(255,255,255,0.14); }

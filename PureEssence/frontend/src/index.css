@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* ── Variables globales ───────────────────────────── */
+:root {
+  --color-obsidian:   #000000;
+  --color-alabaster:  #F5F5F7;
+  --color-gold:       #C5A059;
+  --color-gold-muted: #8E7341;
+  --color-white:      #ffffff;
+
+  --font-heading: 'DM Serif Display', Georgia, serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-body:    'DM Serif Display', Georgia, serif;
+
+  --transition-base: all 0.3s ease;
+  --transition-slow: all 0.7s ease;
+}
+
+/* ── Reset base ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-obsidian);
+  color: var(--color-alabaster);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.022em;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+img { display: block; max-width: 100%; }
+
+::selection {
+  background-color: var(--color-gold);
+  color: var(--color-obsidian);
+}
+
+/* ── Scrollbar personalizado ──────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-obsidian); }
+::-webkit-scrollbar-thumb { background: rgba(197,160,89,0.2); transition: background 0.3s; }
+::-webkit-scrollbar-thumb:hover { background: rgba(197,160,89,0.4); }
+
+/* ── Utilidades globales reutilizables ────────────── */
+.section-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+@media (min-width: 768px)  { .section-container { padding: 0 3rem; } }
+@media (min-width: 1024px) { .section-container { padding: 0 6rem; } }
+
+.btn-alchemy {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  border: 1px solid rgba(197,160,89,0.3);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-gold);
+  transition: var(--transition-slow);
+}
+.btn-alchemy:hover {
+  background-color: var(--color-gold);
+  color: var(--color-obsidian);
+}
+
+.mono-detail {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-gold-muted);
+}
+
+.vertical-rl { writing-mode: vertical-rl; }
+.text-balance { text-wrap: balance; }
