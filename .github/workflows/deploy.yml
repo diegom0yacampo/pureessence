@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: PureEssence/frontend/package-lock.json
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
         working-directory: PureEssence/frontend
 
       - name: Build
