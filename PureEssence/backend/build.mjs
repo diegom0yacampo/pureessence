@@ -8,8 +8,10 @@ const frontendDir = join(__dirname, '..', 'frontend');
 const publicDir = join(__dirname, 'public');
 
 // 1. Build frontend
+// --include=dev es necesario porque NODE_ENV=production omite devDependencies
+// (Vite y plugins están en devDependencies del frontend)
 console.log('\n📦 Instalando dependencias del frontend...');
-execSync('npm install', { cwd: frontendDir, stdio: 'inherit' });
+execSync('npm install --include=dev', { cwd: frontendDir, stdio: 'inherit' });
 
 console.log('\n🔨 Construyendo frontend (Vite)...');
 execSync('npm run build', { cwd: frontendDir, stdio: 'inherit' });
