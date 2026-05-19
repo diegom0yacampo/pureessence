@@ -92,14 +92,6 @@ function requireRole(...roles: string[]) {
 
 
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Backend de la tienda funcionando");
-});
-
-app.get("/api/hello", (req: Request, res: Response) => {
-  res.json({ message: "Hola desde el backend" });
-});
-
 // Ruta de prueba de conexión a la BD
 app.get("/api/test", async (req: Request, res: Response) => {
   const result = await pool.query("SELECT NOW()");
