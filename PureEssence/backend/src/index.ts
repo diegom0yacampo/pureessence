@@ -1028,28 +1028,43 @@ app.post("/api/generate-image", async (req: Request, res: Response) => {
 });
 
 // Servir frontend estático (producción)
-import { existsSync, readdirSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 const publicPath = path.join(__dirname, "..", "public");
-
-// Debug: mostrar estado del directorio public al arrancar
 const indexHtmlPath = path.join(publicPath, "index.html");
+
+// Debug endpoint: lista archivos en public/assets/
+app.get("/api/debug/assets", (req: Request, res: Response) => {
+  const assetsPath = path.join(publicPath, "assets");
+  try {
+    const files = existsSync(assetsPath) ? readdirSync(assetsPath) : [];
+    res.json({ publicPath, indexHtmlExists: existsSync(indexHtmlPath), assets: files });
+  } catch (e: any) {
+    res.json({ error: e.message });
+  }
+});
+
+// Log de arranque
 console.log(`[STATIC] publicPath: ${publicPath}`);
 console.log(`[STATIC] index.html exists: ${existsSync(indexHtmlPath)}`);
 if (existsSync(publicPath)) {
   console.log(`[STATIC] public/ contents: ${readdirSync(publicPath).join(", ")}`);
-} else {
-  console.log(`[STATIC] public/ directory does NOT exist!`);
+  const assetsPath = path.join(publicPath, "assets");
+  if (existsSync(assetsPath)) {
+    console.log(`[STATIC] public/assets/ contents: ${readdirSync(assetsPath).join(", ")}`);
+  }
 }
 
 app.use(express.static(publicPath));
 
-// SPA catch-all: cualquier ruta no-API devuelve el index.html
+// SPA catch-all: usa readFileSync en vez de sendFile para evitar errores de permisos
 app.get("*", (req: Request, res: Response) => {
-  if (!existsSync(indexHtmlPath)) {
-    res.status(200).send(`<h1>App building...</h1><p>publicPath: ${publicPath}</p>`);
-    return;
+  try {
+    const html = readFileSync(indexHtmlPath, "utf8");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.send(html);
+  } catch (e: any) {
+    res.status(200).send(`<h1>publicPath: ${publicPath} | error: ${e.message}</h1>`);
   }
-  res.sendFile(indexHtmlPath);
 });
 
 app.listen(PORT, () => {
