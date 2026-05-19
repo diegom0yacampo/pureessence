@@ -72,8 +72,8 @@ export default function IntranetFichajes() {
     try {
       setLoadingHistory(true);
       const [statusRes, historyRes] = await Promise.all([
-        axios.get('${API_URL}/clock/status'),
-        axios.get('${API_URL}/clock/history'),
+        axios.get(`${API_URL}/clock/status`),
+        axios.get(`${API_URL}/clock/history`),
       ]);
       setIsClockedIn(statusRes.data.isClockedIn);
       setRecords(historyRes.data);
@@ -88,7 +88,7 @@ export default function IntranetFichajes() {
     setLoadingClock(true);
     const type = isClockedIn ? 'Salida' : 'Entrada';
     try {
-      await axios.post('${API_URL}/clock', { type });
+      await axios.post(`${API_URL}/clock`, { type });
       setIsClockedIn(!isClockedIn);
       toast.success(`Registro de ${type} completado.`);
       await fetchAll();

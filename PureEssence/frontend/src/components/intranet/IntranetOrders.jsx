@@ -190,7 +190,7 @@ export default function IntranetOrders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("${API_URL}/orders");
+      const { data } = await axios.get(`${API_URL}/orders`);
       setOrders(data);
     } catch (err) {
       console.error("Error fetching orders:", err);

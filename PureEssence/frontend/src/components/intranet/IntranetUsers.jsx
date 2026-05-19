@@ -22,7 +22,7 @@ export default function IntranetUsers() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get('${API_URL}/admin/users');
+      const { data } = await axios.get(`${API_URL}/admin/users`);
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);

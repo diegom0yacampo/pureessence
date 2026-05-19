@@ -22,7 +22,7 @@ export default function IntranetStock() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const ep = activeType === 'perfumes' ? '${API_URL}/products' : activeType === 'ingredients' ? '${API_URL}/admin/ingredients' : '${API_URL}/admin/bottles';
+      const ep = activeType === 'perfumes' ? `${API_URL}/products` : activeType === 'ingredients' ? `${API_URL}/admin/ingredients` : `${API_URL}/admin/bottles`;
       const { data: result } = await axios.get(ep);
       setData(result.sort((a, b) => a.id - b.id));
     } catch { console.error("Error fetching stock"); }
@@ -52,7 +52,7 @@ export default function IntranetStock() {
   const handleAdd = async (e) => {
     e.preventDefault(); setSaving(true);
     try {
-      const ep = activeType === 'perfumes' ? '${API_URL}/products' : activeType === 'ingredients' ? '${API_URL}/ingredients' : '${API_URL}/bottles';
+      const ep = activeType === 'perfumes' ? `${API_URL}/products` : activeType === 'ingredients' ? `${API_URL}/ingredients` : `${API_URL}/bottles`;
       const payload = { name: form.name, description: form.description, price: parseFloat(form.price) || 0, stock: parseInt(form.stock, 10) || 0, ...(activeType === 'ingredients' && { family: form.family }), ...(form.image_url && { image_url: form.image_url }) };
       const { data: created } = await axios.post(ep, payload);
       setData(prev => [...prev, created].sort((a, b) => a.id - b.id));

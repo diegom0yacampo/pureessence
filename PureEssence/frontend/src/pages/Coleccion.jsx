@@ -16,7 +16,7 @@ export default function Coleccion() {
   React.useEffect(() => {
     fetch(`${API_URL}/products`)
       .then(res => { if (!res.ok) throw new Error("Network error"); return res.json(); })
-      .then(data => setDbProducts(data || []))
+      .then(data => setDbProducts(Array.isArray(data) ? data : []))
       .catch(err => console.error("Failed to load collection:", err));
   }, []);
 

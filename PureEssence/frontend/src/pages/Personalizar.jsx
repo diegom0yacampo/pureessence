@@ -102,7 +102,7 @@ async function fetchBottleImageBase64(src) {
 
 async function generatePerfumeImage(prompt, bottleImageSrc) {
   const bottleImage = bottleImageSrc ? await fetchBottleImageBase64(bottleImageSrc) : null;
-  const res  = await fetch("${API_URL}/generate-image", {
+  const res  = await fetch(`${API_URL}/generate-image`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt, bottleImage }),
@@ -267,8 +267,8 @@ export default function Personalizar() {
     (async () => {
       try {
         const [bRes, iRes] = await Promise.all([
-          axios.get("${API_URL}/bottles"),
-          axios.get("${API_URL}/ingredients"),
+          axios.get(`${API_URL}/bottles`),
+          axios.get(`${API_URL}/ingredients`),
         ]);
         setDbBottles(bRes.data || []);
         setDbIngredients(iRes.data || []);
