@@ -1,0 +1,4 @@
+[build]
+  base = "PureEssence/frontend"
+  publish = "dist"
+  command = "npm run build"
