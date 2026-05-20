@@ -100,6 +100,22 @@
   color: #6b7280;
 }
 
+.testCardBtn {
+  margin-left: auto;
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-gold);
+  border: 1px dashed var(--color-gold);
+  background: none;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.testCardBtn:hover { background-color: rgba(197,160,89,0.1); }
+
 /* Field */
 .fieldWrap { display: flex; flex-direction: column; }
 
@@ -399,3 +415,15 @@
   transition: background-color 0.2s;
 }
 .btnSuccessClose:hover { background-color: rgba(197,160,89,0.9); }
+
+@media (max-width: 639px) {
+  .modal { border-radius: 1rem; max-height: 95vh; }
+  .header { padding: 1.25rem 1.25rem 0.75rem; }
+  .body { padding: 1rem 1.25rem; }
+  .cardPreview { height: 8.5rem; padding: 1rem; }
+  .cardPreviewNumber { font-size: 0.875rem; letter-spacing: 0.15em; }
+  .fieldGrid { grid-template-columns: 1fr; }
+  .btnRow { flex-direction: column; }
+  .btnPrimary, .btnSecondary { flex: unset; width: 100%; }
+  .successWrap { padding: 2rem 0; }
+}

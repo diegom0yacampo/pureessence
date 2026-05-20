@@ -155,3 +155,12 @@
   transform: translateY(0);
 }
 .buyBtn:hover { background-color: rgba(255,255,255,0.9); }
+
+@media (max-width: 767px) {
+  .section { padding: 4rem 0; }
+  .header { margin-bottom: 2.5rem; }
+  .cardOverlay { padding: 1.5rem; }
+  .cardName { font-size: 1.5rem; }
+  .cardDesc { font-size: 1rem; max-width: 100%; }
+  .buyBtn { opacity: 1; transform: none; }
+}

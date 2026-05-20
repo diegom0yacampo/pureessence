@@ -206,6 +206,13 @@ export default function CheckoutModal({ cart, cartTotal, onClose, onSuccess }) {
                 <div className={styles.sectionLead}>
                   <CreditCard size={20} style={{ color: 'var(--color-gold)' }} />
                   <span className={styles.sectionLeadText}>Datos de tarjeta</span>
+                  <button
+                    type="button"
+                    onClick={() => setPayment({ cardNumber: '4242 4242 4242 4242', expiry: '12/27', cvv: '123', cardName: 'PURE ESSENCE TEST' })}
+                    className={styles.testCardBtn}
+                  >
+                    Usar tarjeta de prueba
+                  </button>
                 </div>
 
                 {/* Card preview */}

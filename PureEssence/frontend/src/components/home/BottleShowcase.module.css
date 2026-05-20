@@ -94,3 +94,9 @@
   font-style: italic;
   color: rgba(197,160,89,0.8);
 }
+
+@media (max-width: 767px) {
+  .section { padding: 4rem 0; }
+  .title { font-size: 2rem; }
+  .p { font-size: 1rem; }
+}

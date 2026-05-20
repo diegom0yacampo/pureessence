@@ -551,3 +551,106 @@
 
 /* Floating pill (aroma images) */
 .floatingPill { position: absolute; pointer-events: none; }
+
+/* ── Mobile ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .page {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .mainGrid {
+    grid-template-columns: 1fr;
+    overflow: visible;
+    height: auto;
+  }
+
+  .leftCol {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: visible;
+    height: auto;
+  }
+
+  .wheelWrap {
+    overflow: hidden;
+    height: 36rem;
+  }
+
+  .centerCol {
+    min-height: 20rem;
+    height: 22rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+  }
+
+  .rightCol {
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    overflow: visible;
+    height: auto;
+  }
+
+  .bottleWheelWrap {
+    overflow: hidden;
+    height: 36rem;
+  }
+
+  .bottomBar {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem 1rem;
+    align-items: flex-start;
+  }
+
+  .labelControls {
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 1.25rem 0 0;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-start;
+  }
+
+  .dedicationGroup {
+    width: 100%;
+  }
+
+  .aromasSection {
+    flex-wrap: wrap;
+  }
+
+  .rightActions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .glowCircle {
+    width: 14rem;
+    height: 14rem;
+  }
+
+  .bottleImg {
+    height: 14rem;
+  }
+
+  .bottleEmpty,
+  .bottleOosBox {
+    height: 14rem;
+  }
+
+  .generatedOverlay {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    align-items: flex-start;
+  }
+
+  .generatedActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .floatingPill { display: none; }
+}

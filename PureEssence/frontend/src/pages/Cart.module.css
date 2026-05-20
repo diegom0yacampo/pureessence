@@ -274,3 +274,14 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
 }
+
+@media (max-width: 767px) {
+  .page { padding-top: 5rem; padding-bottom: 3rem; }
+  .emptyPage { padding-top: 6rem; }
+  .pageTitle { font-size: 2rem; margin-bottom: 2rem; }
+  .itemCard { padding: 1rem; gap: 1rem; }
+  .itemImgBtn { width: 6rem; height: 6rem; }
+  .itemName { font-size: 1.125rem; }
+  .itemActions { gap: 1rem; }
+  .summary { position: static; }
+}
