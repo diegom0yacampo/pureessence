@@ -2,6 +2,7 @@ services:
   - type: web
     name: pureessence-backend
     env: node
+    plan: free
     buildCommand: "cd PureEssence/backend && npm install && npm run build"
     startCommand: "cd PureEssence/backend && npm start"
     envVars:
