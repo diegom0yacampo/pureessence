@@ -1,0 +1,28 @@
+services:
+
+  backend:
+    build: ./PureEssence/backend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_AI_KEY: ${GOOGLE_AI_KEY}
+      FRONTEND_URL: http://localhost:80
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./PureEssence/frontend
+      args:
+        VITE_API_URL: http://localhost:3000/api
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

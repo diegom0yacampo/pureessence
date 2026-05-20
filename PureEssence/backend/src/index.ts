@@ -22,6 +22,8 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:80",
+  "http://localhost",
   "https://friendly-lebkuchen-e9d64d.netlify.app",
   "https://diegom0yacampo.github.io",
   process.env.FRONTEND_URL,
@@ -29,7 +31,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -628,6 +630,24 @@ const migrateColumnsIfMissing = async () => {
     await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS codigo_postal TEXT");
     await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS pais TEXT");
     await pool.query("ALTER TABLE order_items DROP CONSTRAINT IF EXISTS order_items_product_id_fkey");
+    await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_id INTEGER");
+    await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending'");
+    await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS address TEXT");
+    await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()");
+    // Quitar todos los NOT NULL de orders excepto 'id' para compatibilidad con schema externo
+    await pool.query(`
+      DO $$
+      DECLARE col RECORD;
+      BEGIN
+        FOR col IN
+          SELECT column_name FROM information_schema.columns
+          WHERE table_name = 'orders' AND table_schema = 'public'
+            AND is_nullable = 'NO' AND column_name != 'id'
+        LOOP
+          EXECUTE format('ALTER TABLE orders ALTER COLUMN %I DROP NOT NULL', col.column_name);
+        END LOOP;
+      END $$;
+    `).catch(() => {});
   } catch (err) {
     console.warn("Column migration warning:", err);
   }

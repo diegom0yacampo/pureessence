@@ -1,11 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
-import { API_URL } from './api';
+import { authService } from '../services/authService';
 
 const AuthContext = createContext();
-
-// Configurar axios para credenciales (cookies)
-axios.defaults.withCredentials = true;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -21,15 +17,15 @@ export const AuthProvider = ({ children }) => {
   const checkUserAuth = async () => {
     try {
       setIsLoadingAuth(true);
-      const response = await axios.get(`${API_URL}/auth/me`);
-      if (response.data.customer) {
-        setUser(response.data.customer);
+      const data = await authService.me();
+      if (data.customer) {
+        setUser(data.customer);
         setIsAuthenticated(true);
       } else {
         setUser(null);
         setIsAuthenticated(false);
       }
-    } catch (error) {
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -41,14 +37,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password) => {
     try {
       setAuthError(null);
-      const response = await axios.post(`${API_URL}/auth/login`, { identifier, password });
-      if (response.data.customer) {
-        setUser(response.data.customer);
+      const data = await authService.login(identifier, password);
+      if (data.customer) {
+        setUser(data.customer);
         setIsAuthenticated(true);
         return true;
       }
     } catch (error) {
-      setAuthError(error.response?.data?.error || 'Error en el inicio de sesión');
+      setAuthError(error.message || 'Error en el inicio de sesión');
       return false;
     }
   };
@@ -56,17 +52,17 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password, dni, address) => {
     try {
       setAuthError(null);
-      await axios.post(`${API_URL}/auth/register`, { username, email, password, dni, address });
+      await authService.register(username, email, password, dni, address);
       return await login(username, password);
     } catch (error) {
-      setAuthError(error.response?.data?.error || 'Error en el registro');
+      setAuthError(error.message || 'Error en el registro');
       return false;
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post(`${API_URL}/auth/logout`);
+      await authService.logout();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
