@@ -63,7 +63,7 @@ jobs:
       - name: Build
         working-directory: PureEssence/frontend
         env:
-          VITE_API_URL: https://pureessence-backend.loca.lt/api
+          VITE_API_URL: https://number-electro-formerly-intent.trycloudflare.com/api
         run: npm run build
 
       - name: Deploy to Netlify
