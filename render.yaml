@@ -34,4 +34,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: "https://pureessence-backend.onrender.com/api"
+        value: "https://pureessence-backend-uiet.onrender.com/api"
