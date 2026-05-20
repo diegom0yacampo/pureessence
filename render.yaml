@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: "cd PureEssence/backend && npm install && npm run build"
-    startCommand: "cd PureEssence/backend && npm start"
+    startCommand: "cd PureEssence/backend && npm run setup-db && npm start"
     envVars:
       - key: DB_HOST
         fromDatabase:
