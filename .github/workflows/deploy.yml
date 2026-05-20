@@ -17,7 +17,7 @@ jobs:
       - name: Deploy to Railway
         working-directory: PureEssence/backend
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: railway up --service pureessence-backend --detach
 
   deploy-frontend:
@@ -29,12 +29,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: PureEssence/frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: PureEssence/frontend
-        run: npm ci
+        run: npm install
 
       - name: Build
         working-directory: PureEssence/frontend
