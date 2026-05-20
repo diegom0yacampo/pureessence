@@ -6,50 +6,45 @@ on:
 
 jobs:
   deploy-backend:
-    name: Backend → Railway (Docker)
+    name: Backend → Railway (Docker/ttl.sh)
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build and push Docker image
+      - name: Build and push to ttl.sh (public, no auth)
         uses: docker/build-push-action@v5
         with:
           context: PureEssence/backend
           push: true
-          tags: ghcr.io/diegom0yacampo/pureessence-backend:latest
+          tags: ttl.sh/pureessence-backend-railway:9999h
 
       - name: Update Railway service to use Docker image
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation{serviceInstanceUpdate(serviceId:\\\"4eb35883-0bbf-49cd-909a-51a76615fb1b\\\",environmentId:\\\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\\\",input:{source:{image:\\\"ghcr.io/diegom0yacampo/pureessence-backend:latest\\\"},startCommand:\\\"npx tsx src/index.ts\\\",registryCredentials:{username:\\\"diegom0yacampo\\\",password:\\\"$GHCR_TOKEN\\\"}})}\"}"; echo ""
+            -d '{"query":"mutation{serviceInstanceUpdate(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",input:{source:{image:\"ttl.sh/pureessence-backend-railway:9999h\"},startCommand:\"\",buildCommand:\"\"})}"}' \
+            && echo "Railway source updated to ttl.sh image" || echo "Update failed (continuing)"
 
-      - name: Trigger Railway redeploy
+      - name: Trigger Railway deploy
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"mutation{serviceInstanceDeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",latestCommit:false)}"}'; echo "" || \
+            -d '{"query":"mutation{serviceInstanceDeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",latestCommit:false)}"}' \
+            && echo "Deploy triggered" || \
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"mutation{serviceInstanceRedeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\")}"}'; echo ""
+            -d '{"query":"mutation{serviceInstanceRedeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\")}"}' \
+            && echo "Redeploy triggered" || echo "Deploy trigger failed (paused)"
 
   deploy-frontend:
     name: Frontend → Netlify
