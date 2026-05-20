@@ -28,7 +28,7 @@ jobs:
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"mutation{serviceInstanceUpdate(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",input:{source:{image:\"ttl.sh/pureessence-backend-railway:9999h\"},startCommand:\"\",buildCommand:\"\"})}"}' \
+            -d '{"query":"mutation{serviceInstanceUpdate(serviceId:\"c51669cd-612e-414d-bb75-07e2bbbd8f19\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",input:{source:{image:\"ttl.sh/pureessence-backend-railway:9999h\"},startCommand:\"\",sleepApplication:true})}"}' \
             && echo "Railway source updated to ttl.sh image" || echo "Update failed (continuing)"
 
       - name: Trigger Railway deploy
@@ -38,12 +38,12 @@ jobs:
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"mutation{serviceInstanceDeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",latestCommit:false)}"}' \
+            -d '{"query":"mutation{serviceInstanceDeploy(serviceId:\"c51669cd-612e-414d-bb75-07e2bbbd8f19\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",latestCommit:false)}"}' \
             && echo "Deploy triggered" || \
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"mutation{serviceInstanceRedeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\")}"}' \
+            -d '{"query":"mutation{serviceInstanceRedeploy(serviceId:\"c51669cd-612e-414d-bb75-07e2bbbd8f19\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\")}"}' \
             && echo "Redeploy triggered" || echo "Deploy trigger failed (paused)"
 
   deploy-frontend:
@@ -63,7 +63,7 @@ jobs:
       - name: Build
         working-directory: PureEssence/frontend
         env:
-          VITE_API_URL: https://pureessence-backend-production-edb9.up.railway.app/api
+          VITE_API_URL: https://pureessence-backend-production-6583.up.railway.app/api
         run: npm run build
 
       - name: Deploy to Netlify
