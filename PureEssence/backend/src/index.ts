@@ -566,21 +566,21 @@ app.get("/api/clock/history", verifyToken, (req: AuthRequest, res: Response) => 
 
 const seedAdminIfMissing = async () => {
   try {
-    const adminEmail = "admin@pureessence.com";
+    const adminEmail = "moya@pureessence.com";
     const check = await pool.query("SELECT id_usuario FROM USUARIO WHERE email = $1 LIMIT 1", [adminEmail]);
     if (check.rows.length === 0) {
-      console.log("Seeding default admin user into AWS database...");
-      const hash = bcrypt.hashSync("admin123", 10);
+      console.log("Seeding default admin user into database...");
+      const hash = bcrypt.hashSync("123", 10);
       try {
         await pool.query(
           "INSERT INTO USUARIO (nombre, email, contrasenya, dni, direccion, rol, es_empleado) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-          ["admin", adminEmail, hash, "12345678A", "Calle Principal 123", "Admin", true]
+          ["Moya", adminEmail, hash, "12345678A", "Calle Principal 123", "Admin", true]
         );
         console.log("Admin seeded successfully with es_empleado.");
       } catch (err) {
         await pool.query(
           "INSERT INTO USUARIO (nombre, email, contrasenya, dni, direccion, rol) VALUES ($1, $2, $3, $4, $5, $6)",
-          ["admin", adminEmail, hash, "12345678A", "Calle Principal 123", "Admin"]
+          ["Moya", adminEmail, hash, "12345678A", "Calle Principal 123", "Admin"]
         );
         console.log("Admin seeded successfully without es_empleado.");
       }
