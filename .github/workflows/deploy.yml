@@ -6,18 +6,50 @@ on:
 
 jobs:
   deploy-backend:
-    name: Backend → Railway
+    name: Backend → Railway (Docker)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: Trigger Railway deploy from GitHub
+      - uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: PureEssence/backend
+          push: true
+          tags: ghcr.io/diegom0yacampo/pureessence-backend:latest
+
+      - name: Update Railway service to use Docker image
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        run: |
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation{serviceInstanceUpdate(serviceId:\\\"4eb35883-0bbf-49cd-909a-51a76615fb1b\\\",environmentId:\\\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\\\",input:{source:{image:\\\"ghcr.io/diegom0yacampo/pureessence-backend:latest\\\"},startCommand:\\\"npx tsx src/index.ts\\\",registryCredentials:{username:\\\"diegom0yacampo\\\",password:\\\"$GHCR_TOKEN\\\"}})}\"}"; echo ""
+
+      - name: Trigger Railway redeploy
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"mutation{githubRepoDeploy(input:{projectId:\"13ada8b7-ae82-4269-a045-ab200e209f28\",repo:\"diegom0yacampo/pureessence\",branch:\"master\"})}"}' \
-            --max-time 30 || echo "Deploy triggered (response timeout OK)"
+            -d '{"query":"mutation{serviceInstanceDeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\",latestCommit:false)}"}'; echo "" || \
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"mutation{serviceInstanceRedeploy(serviceId:\"4eb35883-0bbf-49cd-909a-51a76615fb1b\",environmentId:\"5ddb3f79-1d62-411c-b1d6-9490eb176a23\")}"}'; echo ""
 
   deploy-frontend:
     name: Frontend → Netlify
