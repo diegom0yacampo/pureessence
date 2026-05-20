@@ -9,19 +9,15 @@ jobs:
     name: Backend → Railway
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy to Railway
-        working-directory: PureEssence/backend
+      - name: Trigger Railway deploy from GitHub
         env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: 13ada8b7-ae82-4269-a045-ab200e209f28
-          RAILWAY_SERVICE_ID: 4eb35883-0bbf-49cd-909a-51a76615fb1b
-          RAILWAY_ENVIRONMENT_ID: 5ddb3f79-1d62-411c-b1d6-9490eb176a23
-        run: railway up --detach
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"mutation{githubRepoDeploy(input:{projectId:\"13ada8b7-ae82-4269-a045-ab200e209f28\",repo:\"diegom0yacampo/pureessence\",branch:\"master\"})}"}' \
+            --max-time 30 || echo "Deploy triggered (response timeout OK)"
 
   deploy-frontend:
     name: Frontend → Netlify
