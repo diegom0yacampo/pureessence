@@ -432,21 +432,53 @@ app.patch("/api/orders/:id/status", verifyToken, requireRole("admin", "employee"
   const { status } = req.body as { status: string };
   const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
+  // Mapa de estados modernos → estados académicos (en español)
+  const statusMapAcademico: Record<string, string> = {
+    pending:    "pendiente",
+    processing: "procesando",
+    shipped:    "enviado",
+    delivered:  "entregado",
+    cancelled:  "cancelado",
+  };
+
   if (!validStatuses.includes(status)) {
     res.status(400).json({ error: "Estado no válido" });
     return;
   }
 
+  const orderId = parseInt((req.params as { id: string }).id);
+
   pool.query(
     "UPDATE orders SET status = $1 WHERE id = $2 RETURNING *",
-    [status, parseInt((req.params as { id: string }).id)]
+    [status, orderId]
   )
     .then(result => {
       if (result.rows.length === 0) {
         res.status(404).json({ error: "Pedido no encontrado" });
         return;
       }
-      res.json(result.rows[0]);
+      const order = result.rows[0];
+
+      // Sincronizar con esquema académico si existe el enlace pedido_id
+      if (order.pedido_id) {
+        const estadoAcademico = statusMapAcademico[status] ?? status;
+        pool.query("UPDATE PEDIDO SET estado = $1 WHERE id_pedido = $2", [estadoAcademico, order.pedido_id]).catch(() => {});
+        // Si se marca como enviado, actualizar también el ENVIO
+        if (status === "shipped") {
+          pool.query(
+            "UPDATE ENVIO SET estado_envio = 'enviado', fecha_estimada = (CURRENT_DATE + INTERVAL '5 days') WHERE id_pedido = $1",
+            [order.pedido_id]
+          ).catch(() => {});
+        }
+        if (status === "delivered") {
+          pool.query("UPDATE ENVIO SET estado_envio = 'entregado' WHERE id_pedido = $1", [order.pedido_id]).catch(() => {});
+        }
+        if (status === "cancelled") {
+          pool.query("UPDATE ENVIO SET estado_envio = 'cancelado' WHERE id_pedido = $1", [order.pedido_id]).catch(() => {});
+        }
+      }
+
+      res.json(order);
     })
     .catch(() => res.status(500).json({ error: "Error al actualizar el pedido" }));
 });
@@ -488,19 +520,40 @@ app.post("/api/orders", verifyToken, async (req: AuthRequest, res: Response) => 
     const executeTransaction = async () => {
       await client.query("BEGIN");
 
+      // 1. Insertar en esquema académico: PEDIDO
+      const pedidoResult = await client.query(
+        "INSERT INTO PEDIDO (id_usuario, estado) VALUES ($1, 'pendiente') RETURNING id_pedido",
+        [customerId]
+      );
+      const pedidoId = pedidoResult.rows[0].id_pedido;
+
+      // 2. Insertar en esquema moderno: orders (guardando pedido_id para enlace)
       const orderResult = await client.query(
-        `INSERT INTO orders (customer_id, status, address, nombre, apellido, ciudad, codigo_postal, pais)
-         VALUES ($1, 'pending', $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [customerId, address, nombre, apellido, ciudad, codigo_postal, pais]
+        `INSERT INTO orders (customer_id, status, address, nombre, apellido, ciudad, codigo_postal, pais, pedido_id)
+         VALUES ($1, 'pending', $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [customerId, address, nombre, apellido, ciudad, codigo_postal, pais, pedidoId]
       );
       const orderId = orderResult.rows[0].id;
 
+      // 3. Insertar ENVIO en esquema académico
+      await client.query(
+        "INSERT INTO ENVIO (id_pedido, direccion, estado_envio) VALUES ($1, $2, 'preparando')",
+        [pedidoId, address]
+      );
+
       for (const item of items) {
+        // 4. Líneas en esquema moderno
         await client.query(
           "INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES ($1, $2, $3, $4)",
           [orderId, item.productId, item.quantity, item.unitPrice]
         );
         if (!item.isCustom) {
+          // 5. Líneas en esquema académico: PEDIDO_PERFUME_PRECREADO
+          await client.query(
+            "INSERT INTO PEDIDO_PERFUME_PRECREADO (id_pedido, id_perfume_precreado, cantidad) VALUES ($1, $2, $3)",
+            [pedidoId, item.productId, item.quantity]
+          );
+          // 6. Descontar stock
           await client.query(
             "UPDATE perfume_precreado SET stock = stock - $1 WHERE id_perfume_precreado = $2",
             [item.quantity, item.productId]
@@ -636,6 +689,8 @@ const migrateColumnsIfMissing = async () => {
     await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending'");
     await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS address TEXT");
     await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()");
+    // Columna que enlaza orders con el esquema académico PEDIDO
+    await pool.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS pedido_id INTEGER");
     // Quitar todos los NOT NULL de orders excepto 'id' para compatibilidad con schema externo
     await pool.query(`
       DO $$
